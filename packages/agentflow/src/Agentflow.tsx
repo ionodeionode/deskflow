@@ -148,11 +148,49 @@ function AgentflowCanvas({
             if ((e.metaKey || e.ctrlKey) && e.key === 's') {
                 e.preventDefault()
                 handleSave()
+            } else if ((e.metaKey || e.ctrlKey) && e.altKey && e.code === 'KeyC') {
+                e.preventDefault()
+                // Handle cycling between computers here
+import type { InputParam } from './core/types'
+// ...
+
+            } else if ((e.metaKey || e.ctrlKey) && e.altKey && e.code === 'KeyC') {
+                e.preventDefault()
+                const currentActiveNodeId = state.editingNodeId
+                const allNodes = nodes as FlowNode[]
+                
+                if (!allNodes || allNodes.length === 0) {
+                    console.log('No nodes to cycle through.')
+                    return
+                }
+
+                let nextNodeIndex = 0
+                if (currentActiveNodeId) {
+                    const currentActiveNodeIndex = allNodes.findIndex(node => node.id === currentActiveNodeId)
+                    if (currentActiveNodeIndex !== -1) {
+                        nextNodeIndex = (currentActiveNodeIndex + 1) % allNodes.length
+                    }
+                }
+                
+                const nextNodeToActivate = allNodes[nextNodeIndex]
+                if (nextNodeToActivate) {
+                    const nodeSchema = availableNodes.find(node => node.name === nextNodeToActivate.type);
+                    if (nodeSchema) {
+                        const nodeDataForDialog = {
+                            ...nextNodeToActivate.data,
+                            inputValues: nextNodeToActivate.data.inputValues || {}
+                        };
+                        const inputParamsForDialog = (nodeSchema.inputs || []) as InputParam[];
+                        openEditDialog(nextNodeToActivate.id, nodeDataForDialog, inputParamsForDialog);
+                    } else {
+                        console.warn(`Could not find schema for node type: ${nextNodeToActivate.type}`);
+                    }
+                }
             }
         }
         document.addEventListener('keydown', onKeyDown)
         return () => document.removeEventListener('keydown', onKeyDown)
-    }, [handleSave])
+    }, [handleSave, state.editingNodeId, nodes, availableNodes, openEditDialog])
 
     // Header props
     const headerProps = createHeaderProps(
