@@ -454,7 +454,8 @@ export enum FollowUpPromptProvider {
     MISTRALAI = 'chatMistralAI',
     OPENAI = 'chatOpenAI',
     GROQ = 'groqChat',
-    OLLAMA = 'ollama'
+    OLLAMA = 'ollama',
+    PERPLEXITY = 'perplexityChat'
 }
 
 export type FollowUpPromptProviderConfig = {

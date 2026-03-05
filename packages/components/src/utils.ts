@@ -78,6 +78,7 @@ export const availableDependencies = [
     '@langchain/pinecone',
     '@langchain/qdrant',
     '@langchain/weaviate',
+    '@perplexity/client',
     '@notionhq/client',
     '@opensearch-project/opensearch',
     '@pinecone-database/pinecone',
