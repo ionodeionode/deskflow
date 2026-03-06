@@ -2027,6 +2027,52 @@
                 }
             ]
         }
+        {
+            "name": "perplexityChat",
+            "models": [
+                {
+                    "label": "pplx-7b-online",
+                    "name": "pplx-7b-online"
+                },
+                {
+                    "label": "pplx-70b-online",
+                    "name": "pplx-70b-online"
+                },
+                {
+                    "label": "pplx-7b-chat",
+                    "name": "pplx-7b-chat"
+                },
+                {
+                    "label": "pplx-70b-chat",
+                    "name": "pplx-70b-chat"
+                },
+                {
+                    "label": "llama-2-70b-chat",
+                    "name": "llama-2-70b-chat"
+                },
+                {
+                    "label": "codellama-34b-instruct",
+                    "name": "codellama-34b-instruct"
+                },
+                    {
+                    "label": "mistral-7b-instruct",
+                    "name": "mistral-7b-instruct"
+                }
+            ]
+        },
+        {
+            "name": "groqChat",
+            "models": [
+                {
+                    "label": "llama2-70b-4096",
+                    "name": "llama2-70b-4096"
+                },
+                {
+                    "label": "mixtral-8x7b-32768",
+                    "name": "mixtral-8x7b-32768"
+                }
+            ]
+        }
     ],
     "embedding": [
         {

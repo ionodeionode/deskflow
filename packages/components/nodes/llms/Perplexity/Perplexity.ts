@@ -1,7 +1,9 @@
+import { INode, INodeData, INodeParams } from '../../../src/Interface';
+import { getBaseClasses } from '../../../src/utils';
+import { ChatPerplexity } from '../../chatmodels/ChatPerplexity/FlowiseChatPerplexity';
+import { getCredentialData, getCredentialParam } from '../../../src/utils'
 
-import { INode, INodeData, INodeParams } from '../../src/Interface';
-
-class Perplexity implements INode {
+class PerplexityLLM implements INode {
     label: string;
     name: string;
     version: number;
@@ -10,6 +12,7 @@ class Perplexity implements INode {
     icon: string;
     category: string;
     baseClasses: string[];
+    credential: INodeParams[]; // Changed to array
     inputs: INodeParams[];
 
     constructor() {
@@ -20,15 +23,16 @@ class Perplexity implements INode {
         this.icon = 'perplexity.svg';
         this.category = 'LLMs';
         this.description = 'Perplexity AI large language model';
-        this.baseClasses = ['PerplexityChat'];
-        this.inputs = [
+        this.baseClasses = [this.type, ...getBaseClasses(ChatPerplexity)];
+        this.credential = [
             {
-                label: 'Perplexity API Key',
-                name: 'PerplexityApiKey',
-                type: 'password',
-                placeholder: 'YOUR_PERPLEXITY_API_KEY',
-                required: true
-            },
+                label: 'Connect Credential',
+                name: 'credential',
+                type: 'credential',
+                credentialNames: ['perplexityApi']
+            }
+        ];
+        this.inputs = [
             {
                 label: 'Model Name',
                 name: 'modelName',
@@ -112,13 +116,33 @@ class Perplexity implements INode {
         ];
     }
 
-    async init(): Promise<any> {
-        return null;
-    }
+    async init(nodeData: INodeData): Promise<any> {
+        const temperature = nodeData.inputs?.temperature as string;
+        const modelName = nodeData.inputs?.modelName as string;
+        const maxTokens = nodeData.inputs?.maxTokens as string;
+        const topP = nodeData.inputs?.topP as string;
+        const frequencyPenalty = nodeData.inputs?.frequencyPenalty as string;
+        const presencePenalty = nodeData.inputs?.presencePenalty as string;
+        const stop = nodeData.inputs?.stop as string;
 
-    async run(nodeData: INodeData): Promise<string> {
-        return '';
+        const credentialData = await getCredentialData(nodeData.credential ?? '');
+        const perplexityApiKey = getCredentialParam('perplexityApiKey', credentialData, nodeData);
+
+        const obj: Partial<any> = {
+            model: modelName,
+            temperature: parseFloat(temperature),
+            perplexityApi_key: perplexityApiKey,
+        };
+
+        if (maxTokens) obj.maxTokens = parseInt(maxTokens, 10);
+        if (topP) obj.topP = parseFloat(topP);
+        if (frequencyPenalty) obj.frequencyPenalty = parseFloat(frequencyPenalty);
+        if (presencePenalty) obj.presencePenalty = parseFloat(presencePenalty);
+        if (stop) obj.stop = stop.split(',');
+
+        const model = new ChatPerplexity(nodeData.id, obj);
+        return model;
     }
 }
 
-module.exports = { nodeClass: Perplexity };
+module.exports = { nodeClass: PerplexityLLM };

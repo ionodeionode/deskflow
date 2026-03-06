@@ -455,7 +455,8 @@ export enum FollowUpPromptProvider {
     OPENAI = 'chatOpenAI',
     GROQ = 'groqChat',
     OLLAMA = 'ollama',
-    PERPLEXITY = 'perplexityChat'
+    PERPLEXITY = 'perplexityChat',
+    GROQ = 'groqChat'
 }
 
 export type FollowUpPromptProviderConfig = {
